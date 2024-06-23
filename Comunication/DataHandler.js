@@ -50,6 +50,17 @@ class DataHandler extends EventEmitter {
     handleMainMessage(data) {
         if (data) {
             try {
+                // If value is float, it is the current value
+                // If non float, value is new/set value
+                // Includes floatvalue var, because javascript strips decimal zeros
+                // 0.000 -> 0 and 100.000 -> 100
+                if (data.includes('"value" : ')) {
+                    let splitdata = data.split('"value" : ');
+                    let splitvaluedata = splitdata[1].split(',');
+                    var floatvalue = (splitvaluedata[0].indexOf('.') != -1);
+                } else {
+                    var floatvalue = false;
+                }
                 const parsedData = JSON.parse(data);
                 if (parsedData.hasOwnProperty('responseCode')) {
                     if (parsedData.responseCode === -1) {
@@ -57,6 +68,7 @@ class DataHandler extends EventEmitter {
                     } else if (parsedData.responseCode === 1 && parsedData.hasOwnProperty('response')) {
                         this.successHandler(parsedData.response);
                     } else if (parsedData.responseCode === 2) {
+                        parsedData.response.floatValue = floatvalue;
                         this.updateHandler(parsedData);
                     } else {
 

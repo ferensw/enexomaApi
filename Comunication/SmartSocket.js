@@ -34,6 +34,7 @@ class SmartSocket {
             port: this.config.port,
             ca: this.config.certificate,
             rejectUnauthorized: false,
+            ciphers: 'DEFAULT@SECLEVEL=0',
             checkServerIdentity: function (host, cert) {
                 //console.log(cert);
             }
